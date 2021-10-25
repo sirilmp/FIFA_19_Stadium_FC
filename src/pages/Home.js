@@ -79,19 +79,23 @@ function Home() {
                         <div className='flex flex-col items-center pt-32 h-full'>
                             <div className='flex flex-col items-center max-w-lg h-full'>
                                 <img className='w-40 h-16 mb-6' src="../assets/images/logo.png" alt="" />
+                                <div className='w-80 md:w-full md:ml-2 mb-2'>
+                                    <p className='text-gray_lite text-xs'>You can search with player name, Jersey Number, club name or Nationality.</p>
+                                </div>
                                 <div className='shadow-lg flex rounded-md mx-4'>
-                                    <input className='md:w-96 w-44 sm:w-64 h-10  rounded-tl-md rounded-bl-md bg-white px-3 placeholder-black font-semibold font-raleway-500 focus:outline-none' type="text" placeholder='Search...' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value.toString())} />
-                                    <div className='bg-primary px-5 flex items-center rounded-tr-md rounded-br-md cursor-pointer'>
+                                    <input className='md:w-96 sm:w-64 h-10 rounded-tl-md rounded-bl-md bg-white px-3 placeholder-black font-semibold font-raleway-500 focus:outline-none' type="text" placeholder='Search...' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value.toString())} />
+
+                                    <div className='bg-primary px-5 flex items-center rounded-tr-md rounded-br-md cursor-default'>
                                         <SearchIcon className='h-5 w-5 text-white text-base' />
                                         <p className='ml-2 text-white text-base font-medium font-raleway-500 select-none'>Search</p>
                                     </div>
                                 </div>
                                 {
-                                    searchResults.length === 0 && searchTerm !== '' ? <div className='mt-1 ml-1 self-start max-w-lg'>
+                                    searchResults.length === 0 && searchTerm !== '' ? <div className='mt-1 ml-4 md:ml-1 self-start max-w-lg'>
                                         <h1 className='py-2 px-5 bg-white shadow-md rounded-md font-semibold text-black'>Not found !</h1>
                                     </div> : searchResults.map((player) => (
                                         // Name as the key is not best.
-                                        <div key={player.name} className='mt-1 ml-1 self-start max-w-lg' onClick={() => NavigateToPlayer(player)} >
+                                        <div key={player.name} className='mt-1 ml-4 md:ml-1 self-start max-w-lg' onClick={() => NavigateToPlayer(player)} >
                                             <h1 className='py-2 px-5 bg-white shadow-md rounded-md font-semibold cursor-pointer hover:bg-gray_lite duration-200 text-black'>{player.name}</h1>
                                         </div>
                                     ))
