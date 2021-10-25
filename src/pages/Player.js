@@ -23,7 +23,7 @@ function Player() {
     }
 
     return (
-        <div className='w-full h-full bg-gray_lite '>
+        <div className=' bg-gray_lite '>
 
             <div className='md:flex md:justify-between flex-wrap items-center pt-6'>
                 <div className='flex items-center md:ml-24 ml-3 cursor-pointer' onClick={backToHome}>

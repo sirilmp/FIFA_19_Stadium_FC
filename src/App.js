@@ -10,13 +10,13 @@ import Player from './pages/Player'
 const App = () => {
   return (
     <Switch>
-    <Route path='/' exact >
-      <Home />
-    </Route>
-    <Route path='/player' >
-      <Player />
-    </Route>
-  </Switch>
+      <Route path='/' exact >
+        <Home />
+      </Route>
+      <Route path='/player' >
+        <Player />
+      </Route>
+    </Switch>
   )
 }
 
