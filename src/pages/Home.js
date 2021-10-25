@@ -1,113 +1,110 @@
 import React, { useEffect, useState } from 'react'
 import { SearchIcon } from '@heroicons/react/solid'
 import axios from 'axios'
+import { useHistory } from 'react-router'
+import { useDispatch } from 'react-redux'
+import { set_player } from '../slice/playerSlice'
 
 function Home() {
 
     const [searchTerm, setSearchTerm] = useState('')
     const [players, setPlayers] = useState([])
     const [searchResults, setSearchResults] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const height = window.innerHeight - 250
+    const history = useHistory()
+    const dispatch = useDispatch()
 
     useEffect(() => {
+        setLoading(true)
         const playersData = async () => {
-            const request = await axios.get('https://run.mocky.io/v3/6068f59e-f038-4fd0-8964-03160b96438d').then((res) => {
+            const request = await axios.get('https://run.mocky.io/v3/cdf942c2-b5cb-432c-93cb-fd582dab5126').then((res) => {
                 setPlayers(res.data)
                 console.log(res.data);
+                setLoading(false)
             }).catch((error) => {
                 // alert("Something want wrong pleas try again !")
+                setLoading(false)
             })
             return request
+
         }
         playersData()
+
         return () => {
             playersData()
         }
     }, [])
 
-
-
-
     useEffect(() => {
         if (searchTerm === '') {
+
             setSearchResults([])
+
         } else if (searchTerm !== '') {
+
             const newPlayers = players.filter((player) => {
                 return Object.values(player.name + player.nationality + player.jersey_no.toString() + player.club).join("").toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase().trim())
             })
             setSearchResults(newPlayers)
+
+
         } else {
+
             setSearchResults([])
-        }
-        
-        return () => {
 
         }
+
     }, [searchTerm, players])
 
+    const NavigateToPlayer = (player) => {
 
-    // useEffect(() => {
-    //     if (searchTerm === '') {
-    //         setSearchResults([])
-    //     } else if (searchTerm !== '') {
-    //         const newPlayers = players.filter((player) => {
-    //             return player.name.replace(/[^a-zA-Z ]/g, "").trim().toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase().trim().replace(/[^a-zA-Z ]/g, ""))
-    //         })
-    //         setSearchResults(newPlayers)
-    //     } else {
-    //         setSearchResults([])
-    //     }
-    // }, [searchTerm, players])
-
-    // const search = async(event) => {
-    //     setSearchTerm(event.target.value)
-    //     if (searchTerm === '') {
-    //         setSearchResults([])
-    //     } else if (searchTerm !== '') {
-    //         const newPlayers =await players.filter((player) => {
-    //             return player.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-    //         })
-    //         setSearchResults(newPlayers)
-    //     }else{
-    //         setSearchResults([])
-    //     }
-    // }
-
-    console.log(searchTerm);
-    console.log(players);
-    console.log(searchResults);
+        dispatch(set_player({
+            player: player
+        }))
+        history.push('/player')
+    }
 
     return (
-        <div className='w-full h-full bg-primary'>
-            <div className='lg:grid lg:grid-cols-2 '>
-                <div className='w-screen h-screen bg-no-repeat hidden lg:block' style={{ backgroundImage: "url(../assets/images/bg.png)" }}></div>
-                <div className='flex flex-col items-center pt-32 h-full'>
-                    <div className='flex flex-col items-center max-w-lg h-full'>
-                        <img className='w-40 h-16 mb-6' src="../assets/images/logo.png" alt="" />
-                        <div className='shadow-lg flex rounded-md mx-4'>
-                            <input className='md:w-96 w-44 sm:w-64 h-10  rounded-tl-md rounded-bl-md bg-white px-3 placeholder-black font-semibold font-raleway-500 focus:outline-none' type="text" placeholder='Search...' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value.toString())} />
-                            <div className='bg-primary px-5 flex items-center rounded-tr-md rounded-br-md cursor-pointer'>
-                                <SearchIcon className='h-5 w-5 text-white text-base' />
-                                <p className='ml-2 text-white text-base font-medium font-raleway-500'>Search</p>
-                            </div>
-                        </div>
-                        {
-                            searchResults.length === 0 && searchTerm !== '' ? <div className='mt-1 ml-1 self-start max-w-lg'>
-                                <h1 className='py-2 px-5 bg-white shadow-md rounded-md font-semibold text-black'>Not found !</h1>
-                            </div> : searchResults.map((player) => (
-                                <div className='mt-1 ml-1 self-start max-w-lg'>
-                                    <h1 className='py-2 px-5 bg-white shadow-md rounded-md font-semibold text-black'>{player.name}</h1>
-                                </div>
-                            ))
-
-                        }
+        <>
+            {
+                loading ? <>
+                    <div className='w-screen h-screen  bg-no-repeat flex justify-center items-center bg-primary'>
+                        <img className='w-1/2 h-1/2 animate-pulse' src="../assets/images/football.svg" alt="" />
                     </div>
+                </> : <div className='w-full h-full bg-primary'>
+                    <div className='lg:grid lg:grid-cols-2 '>
+                        <div className='w-screen h-screen bg-no-repeat hidden lg:block' style={{ backgroundImage: "url(../assets/images/bg.png)" }}></div>
+                        <div className='flex flex-col items-center pt-32 h-full'>
+                            <div className='flex flex-col items-center max-w-lg h-full'>
+                                <img className='w-40 h-16 mb-6' src="../assets/images/logo.png" alt="" />
+                                <div className='shadow-lg flex rounded-md mx-4'>
+                                    <input className='md:w-96 w-44 sm:w-64 h-10  rounded-tl-md rounded-bl-md bg-white px-3 placeholder-black font-semibold font-raleway-500 focus:outline-none' type="text" placeholder='Search...' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value.toString())} />
+                                    <div className='bg-primary px-5 flex items-center rounded-tr-md rounded-br-md cursor-pointer'>
+                                        <SearchIcon className='h-5 w-5 text-white text-base' />
+                                        <p className='ml-2 text-white text-base font-medium font-raleway-500 select-none'>Search</p>
+                                    </div>
+                                </div>
+                                {
+                                    searchResults.length === 0 && searchTerm !== '' ? <div className='mt-1 ml-1 self-start max-w-lg'>
+                                        <h1 className='py-2 px-5 bg-white shadow-md rounded-md font-semibold text-black'>Not found !</h1>
+                                    </div> : searchResults.map((player) => (
+                                        // Name as the key is not best.
+                                        <div key={player.name} className='mt-1 ml-1 self-start max-w-lg' onClick={() => NavigateToPlayer(player)} >
+                                            <h1 className='py-2 px-5 bg-white shadow-md rounded-md font-semibold cursor-pointer hover:bg-gray_lite duration-200 text-black'>{player.name}</h1>
+                                        </div>
+                                    ))
 
+                                }
+                            </div>
+
+                        </div>
+                        <div className='w-full bg-no-repeat lg:hidden' style={{ backgroundImage: "url(../assets/images/bg.png)", height: height }}></div>
+                    </div>
                 </div>
-                <div className='w-full bg-no-repeat lg:hidden' style={{ backgroundImage: "url(../assets/images/bg.png)", height: height }}></div>
-            </div>
-        </div>
+            }
+        </>
     )
 }
 
@@ -132,7 +129,7 @@ export default Home
 //         "joined":"1-Jul-2004",
 //         "valid":2021,
 //         "height":"5'7",
-//         "weight":"159lbs",
+//         "weight":159,
 //         "crossing":84,
 //         "finishing":95,
 //         "heading_acc":70,
@@ -156,7 +153,7 @@ export default Home
 //         "joined":"10-Jul-2018",
 //         "valid":2022,
 //         "height":"6'2",
-//         "weight":"183lbs",
+//         "weight":183,
 //         "crossing":84,
 //         "finishing":94,
 //         "heading_acc":89,
@@ -170,8 +167,8 @@ export default Home
 //         "nationality":"Brazil",
 //         "overall":94,
 //         "club":"Paris Saint-Germain",
-//         "value":118.5,
-//         "wage":290,
+//         "value":"~118.5M",
+//         "wage":"~290K",
 //         "preferred_foot":"Right",
 //         "work_rate":"High/Medium",
 //         "position":"LW",
@@ -193,8 +190,8 @@ export default Home
 //         "nationality":"Spain",
 //         "overall":91,
 //         "club":"Manchester United",
-//         "value":72,
-//         "wage":260,
+//         "value":"~72M",
+//         "wage":"~260K",
 //         "preferred_foot":"Right",
 //         "work_rate":"Medium/Medium",
 //         "position":"GK",
@@ -216,8 +213,8 @@ export default Home
 //         "nationality":"Belgium",
 //         "overall":91,
 //         "club":"Manchester City",
-//         "value":102,
-//         "wage":355,
+//         "value":"~102M",
+//         "wage":"~355K",
 //         "preferred_foot":"Right",
 //         "work_rate":"High/High",
 //         "position":"RCM",
